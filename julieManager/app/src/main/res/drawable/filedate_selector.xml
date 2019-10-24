@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Created by julie on 2019.10.23
+    파일 리스트를 눌렀을 때 파일 날짜와 사이즈의 텍스트 색 전환를 위한 xml-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="#a6d6ff" android:state_pressed="true" />
+    <item android:color="#53a7f6" android:state_pressed="false" />
+</selector>
