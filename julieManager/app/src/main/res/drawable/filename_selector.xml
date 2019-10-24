@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Created by julie on 2019.10.23
+    파일 리스트를 눌렀을 때 파일 이름의 텍스트 색 전환를 위한 xml-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="#ffffff" android:state_pressed="true" />
+    <item android:color="#282828" android:state_pressed="false" />
+</selector>

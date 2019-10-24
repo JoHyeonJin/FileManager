@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Created by julie on 2019.10.23
+    리스트 클릭했을 때 배경 변환을 xml-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bg01_p" android:state_pressed="true" />
+</selector>
