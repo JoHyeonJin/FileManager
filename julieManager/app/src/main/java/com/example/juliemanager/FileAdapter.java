@@ -2,10 +2,10 @@ package com.example.juliemanager;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,64 +17,46 @@ import java.util.ArrayList;
  * Created by julie on 2019-10-08
  * 파일 리스트를 화면에 보여주는 어댑터
  */
-public class FileAdapter extends BaseAdapter {
-    private ArrayList<FileItem> fileItems;
-    private ViewHolder viewHolder;
+public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
+    private OnItemClickListener itemClickListener;
+    private ArrayList<FileItem> files;
 
-    public FileAdapter(ArrayList<FileItem> fileItems) {
-        this.fileItems = fileItems;
+    public FileAdapter(ArrayList<FileItem> files) {
+        this.files = files;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View v, int pos);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
-    public int getCount() {
-        return fileItems.size();
+    public int getItemCount() {
+        return files.size();
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-
-    @Override
-    public FileItem getItem(int position) {
-        return fileItems.get(position);
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.fileitem, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
 
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.fileitem, parent, false);
+        return viewHolder;
+    }
 
-            viewHolder = new ViewHolder();
-            viewHolder.li_fileDateAndSize = convertView.findViewById(R.id.li_fileDateAndSize);
-            viewHolder.fileImage = convertView.findViewById(R.id.iv_fileImage);
-            viewHolder.fileName = convertView.findViewById(R.id.tv_fileName);
-            viewHolder.fileDate = convertView.findViewById(R.id.tv_fileDate);
-            viewHolder.fileSize = convertView.findViewById(R.id.tv_fileSize);
-            viewHolder.fileFavorite = convertView.findViewById(R.id.ch_fileFavorite);
-            convertView.setTag(viewHolder);
-
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
-        FileItem fileItem = fileItems.get(position);
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        FileItem fileItem = files.get(position);
 
         // 항목 출력 세팅
-        settingFileItem(fileItem, context);
+        setDisplay(fileItem, holder);
 
         // 항목 출력 활성화
-        if (fileItem.getFileName().equals("...")) {
-            setVisibilitySubFileItem();
-        } else {
-            setVisibilityFileItem();
-        }
-
-        return convertView;
+        setActivation(fileItem, holder);
     }
 
     /**
@@ -82,35 +64,65 @@ public class FileAdapter extends BaseAdapter {
      *
      * @param fileItem
      */
-    private void settingFileItem(FileItem fileItem, Context context) {
-        viewHolder.fileImage.setImageDrawable(ContextCompat.getDrawable(context, fileItem.getFileIcon()));
-        viewHolder.fileName.setText(fileItem.getFileName());
-        viewHolder.fileDate.setText(fileItem.getFileDate());
-        viewHolder.fileSize.setText(fileItem.getFileSize());
+    private void setDisplay(FileItem fileItem, ViewHolder holder) {
+        holder.fileImage.setImageDrawable(ContextCompat.getDrawable(holder.itemView.getContext(), fileItem.getFileIcon()));
+        holder.fileName.setText(fileItem.getFileName());
+        holder.fileDate.setText(fileItem.getFileDate());
+        holder.fileSize.setText(fileItem.getFileSize());
     }
 
     /**
-     * 상위 이동을 위한 항목 일때 활성화 세팅
+     * 항목 출력 활성화
+     *
+     * @param fileItem 현재 항목
      */
-    private void setVisibilitySubFileItem() {
-        viewHolder.li_fileDateAndSize.setVisibility(View.GONE);
-        viewHolder.fileFavorite.setVisibility(View.GONE);
+    private void setActivation(FileItem fileItem, ViewHolder viewHolder) {
+        //파일일 경우
+        if (fileItem.isFile()) {
+            viewHolder.li_fileDateAndSize.setVisibility(View.VISIBLE);
+            viewHolder.fileSize.setVisibility(View.VISIBLE);
+            viewHolder.fileFavorite.setVisibility(View.VISIBLE);
+        } else if (fileItem.getFileName().equals("..")) { //상위 경로 이동 폴더일 경우
+            viewHolder.li_fileDateAndSize.setVisibility(View.GONE);
+            viewHolder.fileSize.setVisibility(View.GONE);
+            viewHolder.fileFavorite.setVisibility(View.GONE);
+        } else { //폴더일 경우
+            viewHolder.li_fileDateAndSize.setVisibility(View.VISIBLE);
+            viewHolder.fileSize.setVisibility(View.GONE);
+            viewHolder.fileFavorite.setVisibility(View.VISIBLE);
+        }
     }
 
-    /**
-     * 파일/폴더 항 일때 활성화 세팅
-     */
-    private void setVisibilityFileItem() {
-        viewHolder.li_fileDateAndSize.setVisibility(View.VISIBLE);
-        viewHolder.fileFavorite.setVisibility(View.VISIBLE);
-    }
-
-    private static class ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout li_fileDateAndSize;
         ImageView fileImage;
         TextView fileName;
         TextView fileDate;
         TextView fileSize;
         CheckBox fileFavorite;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        itemClickListener.onItemClick(v, pos);
+                    }
+                }
+            });
+
+            initView();
+        }
+
+        private void initView() {
+            li_fileDateAndSize = itemView.findViewById(R.id.li_fileDateAndSize);
+            fileImage = itemView.findViewById(R.id.iv_fileImage);
+            fileName = itemView.findViewById(R.id.tv_fileName);
+            fileDate = itemView.findViewById(R.id.tv_fileDate);
+            fileSize = itemView.findViewById(R.id.tv_fileSize);
+            fileFavorite = itemView.findViewById(R.id.ch_fileFavorite);
+        }
     }
 }

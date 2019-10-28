@@ -9,6 +9,7 @@ class FileItem {
     var fileIcon: Int = 0
     var fileName: String? = null
     var fileDate: String? = null
-    var fileSize: String? = null
-    var fileExt: String? = null
+    var fileSize: String? = ""
+    var fileExt: String? = ""
+    var filePath: String? = ""
 }

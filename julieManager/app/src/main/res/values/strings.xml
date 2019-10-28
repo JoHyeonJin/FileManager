@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">julieManager</string>
+    <string name="NOT_FOUND_VIEWER">"Can't find viewer</string>
 </resources>

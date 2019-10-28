@@ -1,5 +1,8 @@
 package com.example.juliemanager.utils;
 
+import android.webkit.MimeTypeMap;
+
+import com.example.juliemanager.FileItem;
 import com.example.juliemanager.R;
 
 import java.text.DateFormat;
@@ -36,7 +39,7 @@ public class FileUtils {
         }
 
         if (size < base) {
-            return String.format("%.2f%s", size, "B");
+            return String.format("%d%s", size, "B");
         }
 
         int exp = (int) (Math.log(size) / Math.log(base));
@@ -46,25 +49,22 @@ public class FileUtils {
     /**
      * 파일 확장자만 가져오는 함수
      *
-     * @param name 파일 이름
+     * @param path 파일 경로
      * @return 파일 확장자
      */
-    public static String getFormattedFileExt(String name) {
-        if (name.contains(".")) return name.substring(name.lastIndexOf(".") + 1, name.length());
-        return "";
+    public static String getFormattedFileExt(String path) {
+        return MimeTypeMap.getFileExtensionFromUrl(path);
     }
 
-
     /**
-     * 파일 확장자에 따른 파일 아이콘을 가져오는 함수
+     * 파일 종류에 따른 아이콘 반환 함수
      *
-     * @param name 파일 이름
-     * @return 파일 아이콘
+     * @param fileItem 현재 파일
+     * @return 아이콘
      */
-    public static int getFormattedFileIcon(String name) {
+    public static int getFormattedFileIcon(FileItem fileItem) {
         int draw;
-        String ext = getFormattedFileExt(name);
-        switch (ext) {
+        switch (fileItem.getFileExt()) {
             case "doc":
                 draw = R.drawable.ico_file_doc;
                 break;
@@ -84,22 +84,31 @@ public class FileUtils {
                 draw = R.drawable.ico_file_xlsx;
                 break;
             default:
-                draw = R.drawable.ico_file_unknown;
+                if (!fileItem.isFile()) {
+                    draw = R.drawable.ico_file_folder_nosub;
+                } else {
+                    draw = R.drawable.ico_file_unknown;
+                }
                 break;
-
         }
 
         return draw;
     }
 
     /**
-     * 폴더 형태에 따른 아이콘을 가져오는 함수
+     * 현재 파일의 MimeType을 가져오는 함수
      *
-     * @return 폴더 아이콘
+     * @param extension 파일 확장자
+     * @return MimeType
      */
-    public static int getFormattedFolderIcon() {
-        // TODO: 2019/10/22 추후 폴더 형태에 따라 아이콘 다르게 반환하도록 추가
-        return R.drawable.ico_file_folder_nosub;
-    }
+    public static String getMimeType(String extension) {
+        String type = "";
 
+        if (extension != null) {
+            MimeTypeMap mime = MimeTypeMap.getSingleton();
+            type = mime.getMimeTypeFromExtension(extension);
+        }
+
+        return type;
+    }
 }

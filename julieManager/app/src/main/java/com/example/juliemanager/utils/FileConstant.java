@@ -7,5 +7,5 @@ import android.os.Environment;
  * 상수 클래스
  */
 public class FileConstant {
-    public static final String ROOT = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents";
+    public static final String ROOT = Environment.getExternalStorageDirectory().getAbsolutePath();
 }

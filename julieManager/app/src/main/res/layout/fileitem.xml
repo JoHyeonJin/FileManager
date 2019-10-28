@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="54dp"
     android:descendantFocusability="blocksDescendants"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/listview_selector">
 
     <!--file icon-->
     <ImageView
