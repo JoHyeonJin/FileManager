@@ -1,4 +1,4 @@
-package com.example.juliemanager;
+package com.example.juliemanager.list;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -14,7 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.juliemanager.utils.FileListFunction;
+import com.example.juliemanager.R;
+import com.example.juliemanager.function.FileListFunction;
 
 import java.util.ArrayList;
 
@@ -26,12 +27,10 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  */
 public class FileListFragment extends Fragment {
     private ArrayList<FileItem> fileItems;
-    private FileListFunction fileListFunction;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fileListFunction = new FileListFunction();
         grant();
     }
 
@@ -42,25 +41,13 @@ public class FileListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         RecyclerView recyclerView = view.findViewById(R.id.view_fileList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        final FileAdapter fileAdapter = new FileAdapter(fileItems);
-        fileAdapter.setItemClickListener(new FileAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                FileItem selectItem = fileItems.get(position);
-                if (selectItem.isFile()) { //파일일 경우 뷰어 열기
-                    fileListFunction.showFileViewer(getContext(), selectItem);
-                } else {
-                    fileItems.clear(); //폴더일 경우 상위,하위로 이동
-                    fileItems.addAll(fileListFunction.getFileList(selectItem.getFilePath()));
-                    fileAdapter.notifyDataSetChanged();
-                }
-            }
-        });
-        recyclerView.setAdapter(fileAdapter);
 
-        super.onViewCreated(view, savedInstanceState);
+        final FileAdapter fileAdapter = new FileAdapter(fileItems);
+        recyclerView.setAdapter(fileAdapter);
     }
 
     /**
@@ -72,7 +59,7 @@ public class FileListFragment extends Fragment {
             if (permissionResult == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             } else {
-                fileItems = (ArrayList) fileListFunction.getFileList(ROOT);
+                fileItems = (ArrayList) FileListFunction.getFileList(ROOT);
             }
         }
     }
@@ -82,7 +69,7 @@ public class FileListFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fileItems = (ArrayList) fileListFunction.getFileList(ROOT);
+                fileItems = (ArrayList) FileListFunction.getFileList(ROOT);
             }
         }
     }

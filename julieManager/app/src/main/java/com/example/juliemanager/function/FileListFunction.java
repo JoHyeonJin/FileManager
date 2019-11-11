@@ -1,4 +1,4 @@
-package com.example.juliemanager.utils;
+package com.example.juliemanager.function;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -7,8 +7,9 @@ import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
-import com.example.juliemanager.FileItem;
+import com.example.juliemanager.list.FileItem;
 import com.example.juliemanager.R;
+import com.example.juliemanager.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class FileListFunction {
      * @param path 경로
      * @return 파일 리스트
      */
-    public List<FileItem> getFileList(String path) {
+    public static List<FileItem> getFileList(String path) {
         File currentDir = new File(path);
 
         if (!currentDir.exists()) {
@@ -54,7 +55,7 @@ public class FileListFunction {
      * @param files      현재 폴더의 항목 리스트
      * @return 파일 리스트
      */
-    private List<FileItem> addFileList(File currentDir, File[] files) {
+    private static List<FileItem> addFileList(File currentDir, File[] files) {
         List<FileItem> fileItems = new ArrayList<>();
 
         // 현재 위치에서 상위로 이동 가능한 경우 상위로 이동할 리스트 아이템 추가
@@ -89,7 +90,7 @@ public class FileListFunction {
      * @param context    컨텍스트
      * @param selectItem 선택한 파일
      */
-    public void showFileViewer(Context context, FileItem selectItem) {
+    public static void showFileViewer(Context context, FileItem selectItem) {
         //버전 7.0 부터 앱 사이 공유 엄격화로 인해 외장 경로에 임시 액세스 권한 부여
         Uri data = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(selectItem.getFilePath()));
         String type = FileUtils.getMimeType(selectItem.getFileExt());

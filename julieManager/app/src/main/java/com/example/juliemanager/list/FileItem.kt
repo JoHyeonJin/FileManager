@@ -1,4 +1,4 @@
-package com.example.juliemanager
+package com.example.juliemanager.list
 
 /**
  * Created by julie on 2019-10-08
@@ -9,7 +9,7 @@ class FileItem {
     var fileIcon: Int = 0
     var fileName: String? = null
     var fileDate: String? = null
-    var fileSize: String? = ""
-    var fileExt: String? = ""
-    var filePath: String? = ""
+    var fileSize: String = ""
+    var fileExt: String = ""
+    var filePath: String = ""
 }
