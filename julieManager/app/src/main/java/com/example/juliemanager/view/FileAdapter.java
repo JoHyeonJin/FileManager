@@ -1,4 +1,4 @@
-package com.example.juliemanager.list;
+package com.example.juliemanager.view;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -6,9 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.function.FileListFunction;
+import com.example.juliemanager.callback.NotifyFileAdapterCallback;
+import com.example.juliemanager.data.FileItem;
+import com.example.juliemanager.function.file.FileRefreshAsync;
+import com.example.juliemanager.function.file.FileListFunction;
 
 import java.util.ArrayList;
 
@@ -17,11 +21,10 @@ import java.util.ArrayList;
  * 파일 리스트를 화면에 보여주는 어댑터
  */
 public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
-
     private ArrayList<FileItem> fileItems;
 
-    public FileAdapter(ArrayList<FileItem> files) {
-        this.fileItems = files;
+    public FileAdapter() {
+        this.fileItems = new ArrayList<>();
     }
 
     @Override
@@ -43,9 +46,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
                 if (selectItem.isFile()) { //파일일 경우 뷰어 열기
                     FileListFunction.showFileViewer(context, selectItem);
                 } else {
-                    fileItems.clear(); //폴더일 경우 상위,하위로 이동
-                    fileItems.addAll(FileListFunction.getFileList(selectItem.getFilePath()));
-                    notifyDataSetChanged();
+                    //폴더일 경우 상위,하위로 이동
+                    refreshFileList(selectItem.getFilePath());
                 }
             }
         });
@@ -96,5 +98,25 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
             viewHolder.fileSize.setVisibility(View.GONE);
             viewHolder.fileFavorite.setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     * 경로의 파일 리스트를 가져와 갱신하는 함수
+     *
+     * @param path 경로
+     */
+    public void refreshFileList(String path) {
+        FileRefreshAsync listAsyncTask = new FileRefreshAsync();
+        NotifyFileAdapterCallback notifyFileAdapterCallback = new NotifyFileAdapterCallback() {
+            @Override
+            public void notifyAdapter(ArrayList<FileItem> fileItemArrayList) {
+                fileItems.clear();
+                fileItems.addAll(fileItemArrayList);
+                notifyDataSetChanged();
+            }
+        };
+
+        listAsyncTask.setNotifyAdapterCallback(notifyFileAdapterCallback);
+        listAsyncTask.execute(path);
     }
 }

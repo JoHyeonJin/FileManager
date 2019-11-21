@@ -1,4 +1,4 @@
-package com.example.juliemanager.list
+package com.example.juliemanager.data
 
 /**
  * Created by julie on 2019-10-08

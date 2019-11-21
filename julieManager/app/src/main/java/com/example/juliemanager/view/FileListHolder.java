@@ -1,4 +1,4 @@
-package com.example.juliemanager.list;
+package com.example.juliemanager.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -54,6 +54,4 @@ public class FileListHolder extends RecyclerView.ViewHolder {
     public void setItemClickListener(OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
-
-
 }

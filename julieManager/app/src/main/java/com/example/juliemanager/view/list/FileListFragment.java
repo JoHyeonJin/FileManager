@@ -15,9 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.function.FileListFunction;
-
-import java.util.ArrayList;
 
 import static com.example.juliemanager.utils.FileConstant.ROOT;
 
@@ -26,7 +23,6 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  * 파일 리스트를 보여주는 프래그먼트
  */
 public class FileListFragment extends Fragment {
-    private ArrayList<FileItem> fileItems;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,8 +42,11 @@ public class FileListFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.view_fileList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        final FileAdapter fileAdapter = new FileAdapter(fileItems);
+        final FileAdapter fileAdapter = new FileAdapter();
         recyclerView.setAdapter(fileAdapter);
+
+        //ROOT 경로의 파일 리스트 갱신
+        fileAdapter.refreshFileList(ROOT);
     }
 
     /**
@@ -58,8 +57,6 @@ public class FileListFragment extends Fragment {
             int permissionResult = this.getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
             if (permissionResult == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            } else {
-                fileItems = (ArrayList) FileListFunction.getFileList(ROOT);
             }
         }
     }
@@ -68,8 +65,8 @@ public class FileListFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fileItems = (ArrayList) FileListFunction.getFileList(ROOT);
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                // TODO: 2019-11-11 권한이 없을 때 예외 처리 필요
             }
         }
     }
