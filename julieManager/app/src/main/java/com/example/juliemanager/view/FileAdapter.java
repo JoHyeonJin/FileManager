@@ -6,12 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import com.example.juliemanager.R;
 import com.example.juliemanager.callback.NotifyFileAdapterCallback;
 import com.example.juliemanager.data.FileItem;
-import com.example.juliemanager.function.file.FileRefreshAsync;
 import com.example.juliemanager.function.file.FileListFunction;
 
 import java.util.ArrayList;
@@ -22,9 +20,11 @@ import java.util.ArrayList;
  */
 public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
     private ArrayList<FileItem> fileItems;
+    private NotifyFileAdapterCallback notifyFileAdapterCallback;
 
     public FileAdapter() {
         this.fileItems = new ArrayList<>();
+        setNotifyFileAdapterCallback();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
                     FileListFunction.showFileViewer(context, selectItem);
                 } else {
                     //폴더일 경우 상위,하위로 이동
-                    refreshFileList(selectItem.getFilePath());
+                    FileListFunction.refreshFileList(selectItem.getFilePath(), notifyFileAdapterCallback);
                 }
             }
         });
@@ -101,13 +101,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
     }
 
     /**
-     * 경로의 파일 리스트를 가져와 갱신하는 함수
-     *
-     * @param path 경로
+     * 파일 리스트 데이터 변경 후 화면 갱신 처리를 하는 함수
      */
-    public void refreshFileList(String path) {
-        FileRefreshAsync listAsyncTask = new FileRefreshAsync();
-        NotifyFileAdapterCallback notifyFileAdapterCallback = new NotifyFileAdapterCallback() {
+    public void setNotifyFileAdapterCallback() {
+        this.notifyFileAdapterCallback = new NotifyFileAdapterCallback() {
             @Override
             public void notifyAdapter(ArrayList<FileItem> fileItemArrayList) {
                 fileItems.clear();
@@ -115,8 +112,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
                 notifyDataSetChanged();
             }
         };
+    }
 
-        listAsyncTask.setNotifyAdapterCallback(notifyFileAdapterCallback);
-        listAsyncTask.execute(path);
+    public NotifyFileAdapterCallback getNotifyFileAdapterCallback() {
+        return notifyFileAdapterCallback;
     }
 }

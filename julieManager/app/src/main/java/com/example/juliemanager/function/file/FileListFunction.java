@@ -1,4 +1,4 @@
-package com.example.juliemanager.function;
+package com.example.juliemanager.function.file;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -7,8 +7,9 @@ import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
-import com.example.juliemanager.list.FileItem;
 import com.example.juliemanager.R;
+import com.example.juliemanager.callback.NotifyFileAdapterCallback;
+import com.example.juliemanager.data.FileItem;
 import com.example.juliemanager.utils.FileUtils;
 
 import java.io.File;
@@ -37,5 +38,17 @@ public class FileListFunction {
             // 해당 파일을 열 뷰어가 없는 경우 메시지 출력
             Toast.makeText(context, context.getText(R.string.NOT_FOUND_VIEWER), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * 경로의 파일 리스트를 가져와 갱신하는 함수
+     *
+     * @param path                      경로
+     * @param notifyFileAdapterCallback 파일 리스트 데이터 변경 후 화면 갱신 처리를 할 콜백
+     */
+    public static void refreshFileList(String path, NotifyFileAdapterCallback notifyFileAdapterCallback) {
+        FileRefreshAsync listAsyncTask = new FileRefreshAsync();
+        listAsyncTask.setNotifyAdapterCallback(notifyFileAdapterCallback);
+        listAsyncTask.execute(path);
     }
 }

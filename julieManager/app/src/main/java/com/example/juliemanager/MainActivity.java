@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.example.juliemanager.list.FileListFragment;
+import com.example.juliemanager.view.FileListFragment;
 
 /**
  * Created by julie on 2019-10-08
@@ -29,5 +29,4 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.listFragment, new FileListFragment());
         fragmentTransaction.commit();
     }
-
 }

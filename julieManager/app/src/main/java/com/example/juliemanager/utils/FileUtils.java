@@ -2,8 +2,8 @@ package com.example.juliemanager.utils;
 
 import android.webkit.MimeTypeMap;
 
-import com.example.juliemanager.list.FileItem;
 import com.example.juliemanager.R;
+import com.example.juliemanager.data.FileItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

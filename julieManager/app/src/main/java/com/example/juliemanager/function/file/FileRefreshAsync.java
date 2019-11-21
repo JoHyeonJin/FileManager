@@ -1,9 +1,10 @@
-package com.example.juliemanager.list;
+package com.example.juliemanager.function.file;
 
 import android.os.AsyncTask;
 
 import com.example.juliemanager.R;
 import com.example.juliemanager.callback.NotifyFileAdapterCallback;
+import com.example.juliemanager.data.FileItem;
 import com.example.juliemanager.utils.FileUtils;
 
 import java.io.File;
@@ -16,7 +17,7 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  * Created by julie on 2019-11-11
  * 현재 경로에 대해 파일 리스트 가져오는 클래스
  */
-public class FileListAsyncTask extends AsyncTask<String, Void, ArrayList<FileItem>> {
+public class FileRefreshAsync extends AsyncTask<String, Void, ArrayList<FileItem>> {
     NotifyFileAdapterCallback notifyAdapterCallback;
 
     public void setNotifyAdapterCallback(NotifyFileAdapterCallback notifyAdapterCallback) {
