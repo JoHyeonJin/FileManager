@@ -86,6 +86,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
         viewHolder.fileName.setText(fileItem.getFileName());
         viewHolder.fileDate.setText(fileItem.getFileDate());
         viewHolder.fileSize.setText(fileItem.getFileSize());
+        viewHolder.fileFavorite.setChecked(fileItem.getFileFavorite());
     }
 
     /**
