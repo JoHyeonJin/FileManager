@@ -13,6 +13,7 @@ import com.example.juliemanager.data.FileItem;
 import com.example.juliemanager.utils.FileUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by julie on 2019-10-15
@@ -44,11 +45,11 @@ public class FileListFunction {
      * 경로의 파일 리스트를 가져와 갱신하는 함수
      *
      * @param path                      경로
-     * @param notifyFileAdapterCallback 파일 리스트 데이터 변경 후 화면 갱신 처리를 할 콜백
+     * @param fileItems                 파일 리스트
+     * @param notifyFileAdapterCallback 파일 리스트 데이터 변경 후 데이터 변경 알림을 위한 콜백
      */
-    public static void refreshFileList(String path, NotifyFileAdapterCallback notifyFileAdapterCallback) {
-        FileRefreshAsync listAsyncTask = new FileRefreshAsync();
-        listAsyncTask.setNotifyAdapterCallback(notifyFileAdapterCallback);
+    public static void refreshFileList(String path, ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyFileAdapterCallback) {
+        FileRefreshAsync listAsyncTask = new FileRefreshAsync(fileItems, notifyFileAdapterCallback);
         listAsyncTask.execute(path);
     }
 }

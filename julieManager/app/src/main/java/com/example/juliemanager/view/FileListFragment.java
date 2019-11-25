@@ -15,7 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.juliemanager.R;
+import com.example.juliemanager.function.edit.FileEditFunction;
 import com.example.juliemanager.function.file.FileListFunction;
+
+import java.util.ArrayList;
 
 import static com.example.juliemanager.utils.FileConstant.ROOT;
 
@@ -24,6 +27,7 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  * 파일 리스트를 보여주는 프래그먼트
  */
 public class FileListFragment extends Fragment {
+    private FileAdapter fileAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,23 +46,29 @@ public class FileListFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.view_fileList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        final FileAdapter fileAdapter = new FileAdapter();
+        fileAdapter = new FileAdapter();
         recyclerView.setAdapter(fileAdapter);
-
         //ROOT 경로의 파일 리스트 갱신
-        FileListFunction.refreshFileList(ROOT, fileAdapter.getNotifyFileAdapterCallback());
+        FileListFunction.refreshFileList(ROOT, fileAdapter.getFileItems(), fileAdapter.getNotifyFileAdapterCallback());
     }
 
     /**
      * 권한 주기
      */
     private void grant() {
+        ArrayList<String> permissionList = new ArrayList<>();
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        int permissionResult;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int permissionResult = this.getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-            if (permissionResult == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            for (String permission : permissions) {
+                permissionResult = this.getActivity().checkSelfPermission(permission);
+                if (permissionResult == PackageManager.PERMISSION_DENIED) {
+                    permissionList.add(permission);
+                }
             }
+
+            if (!permissionList.isEmpty())
+                ActivityCompat.requestPermissions(getActivity(), permissionList.toArray(new String[permissionList.size()]), 1);
         }
     }
 
@@ -70,5 +80,12 @@ public class FileListFragment extends Fragment {
                 // TODO: 2019-11-11 권한이 없을 때 예외 처리 필요
             }
         }
+    }
+
+    /**
+     * 파일 삭제
+     */
+    public void delete() {
+        FileEditFunction.deleteFile(fileAdapter.getFileItems(), fileAdapter.getNotifyFileAdapterCallback());
     }
 }

@@ -3,18 +3,24 @@ package com.example.juliemanager.view;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.juliemanager.R;
+import com.example.juliemanager.listener.OnCheckedChangedListener;
+import com.example.juliemanager.listener.OnItemClickListener;
 
 /**
  * Created by julie on 2019-11-11
  * 파일 리스트 뷰 홀더
  */
-public class FileListHolder extends RecyclerView.ViewHolder {
+public class
+
+FileListHolder extends RecyclerView.ViewHolder {
     private OnItemClickListener itemClickListener;
+    private OnCheckedChangedListener checkedChangedListener;
 
     LinearLayout li_fileDateAndSize;
     ImageView fileImage;
@@ -45,13 +51,19 @@ public class FileListHolder extends RecyclerView.ViewHolder {
         fileDate = itemView.findViewById(R.id.tv_fileDate);
         fileSize = itemView.findViewById(R.id.tv_fileSize);
         fileFavorite = itemView.findViewById(R.id.ch_fileFavorite);
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View v, int pos);
+        fileFavorite.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkedChangedListener.onCheckedChanged(getAdapterPosition(), isChecked);
+            }
+        });
     }
 
     public void setItemClickListener(OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setCheckedChangedListener(OnCheckedChangedListener checkedChangedListener) {
+        this.checkedChangedListener = checkedChangedListener;
     }
 }

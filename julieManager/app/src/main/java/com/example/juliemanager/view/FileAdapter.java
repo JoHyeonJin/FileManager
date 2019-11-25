@@ -11,6 +11,8 @@ import com.example.juliemanager.R;
 import com.example.juliemanager.callback.NotifyFileAdapterCallback;
 import com.example.juliemanager.data.FileItem;
 import com.example.juliemanager.function.file.FileListFunction;
+import com.example.juliemanager.listener.OnCheckedChangedListener;
+import com.example.juliemanager.listener.OnItemClickListener;
 
 import java.util.ArrayList;
 
@@ -39,7 +41,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
         View view = inflater.inflate(R.layout.fileitem, parent, false);
 
         FileListHolder viewHolder = new FileListHolder(view);
-        viewHolder.setItemClickListener(new FileListHolder.OnItemClickListener() {
+        viewHolder.setItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 FileItem selectItem = fileItems.get(position);
@@ -47,8 +49,16 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
                     FileListFunction.showFileViewer(context, selectItem);
                 } else {
                     //폴더일 경우 상위,하위로 이동
-                    FileListFunction.refreshFileList(selectItem.getFilePath(), notifyFileAdapterCallback);
+                    FileListFunction.refreshFileList(selectItem.getFilePath(), fileItems, notifyFileAdapterCallback);
                 }
+            }
+        });
+
+        viewHolder.setCheckedChangedListener(new OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(int pos, boolean isCheck) {
+                //파일의 즐겨찾기를 체크 유무를 데이터에 저장
+                fileItems.get(pos).setFileFavorite(isCheck);
             }
         });
 
@@ -106,9 +116,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
     public void setNotifyFileAdapterCallback() {
         this.notifyFileAdapterCallback = new NotifyFileAdapterCallback() {
             @Override
-            public void notifyAdapter(ArrayList<FileItem> fileItemArrayList) {
-                fileItems.clear();
-                fileItems.addAll(fileItemArrayList);
+            public void notifyAdapter() {
                 notifyDataSetChanged();
             }
         };
@@ -117,4 +125,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
     public NotifyFileAdapterCallback getNotifyFileAdapterCallback() {
         return notifyFileAdapterCallback;
     }
+
+    public ArrayList<FileItem> getFileItems() {
+        return fileItems;
+    }
+
 }

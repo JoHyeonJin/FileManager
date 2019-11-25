@@ -12,4 +12,5 @@ class FileItem {
     var fileSize: String = ""
     var fileExt: String = ""
     var filePath: String = ""
+    var fileFavorite: Boolean = false
 }

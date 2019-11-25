@@ -18,9 +18,11 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  * 현재 경로에 대해 파일 리스트 가져오는 클래스
  */
 public class FileRefreshAsync extends AsyncTask<String, Void, ArrayList<FileItem>> {
-    NotifyFileAdapterCallback notifyAdapterCallback;
+    private ArrayList<FileItem> fileItems;
+    private NotifyFileAdapterCallback notifyAdapterCallback;
 
-    public void setNotifyAdapterCallback(NotifyFileAdapterCallback notifyAdapterCallback) {
+    public FileRefreshAsync(ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyAdapterCallback) {
+        this.fileItems = fileItems;
         this.notifyAdapterCallback = notifyAdapterCallback;
     }
 
@@ -82,10 +84,12 @@ public class FileRefreshAsync extends AsyncTask<String, Void, ArrayList<FileItem
     @Override
     protected void onPostExecute(ArrayList<FileItem> fileItemArrayList) {
         super.onPostExecute(fileItemArrayList);
+        fileItems.clear();
+        fileItems.addAll(fileItemArrayList);
 
         // TODO: julie 2019-10-25 현재 경로가 존재하지 않거나, 파일 리스트가 존재하지 않을 때 예외 처리 필요.
-        if (fileItemArrayList.isEmpty()) return;
+        if (fileItems.isEmpty()) return;
 
-        notifyAdapterCallback.notifyAdapter(fileItemArrayList);
+        notifyAdapterCallback.notifyAdapter();
     }
 }
