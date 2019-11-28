@@ -10,15 +10,14 @@ import android.view.ViewGroup;
 import com.example.juliemanager.R;
 import com.example.juliemanager.callback.NotifyFileAdapterCallback;
 import com.example.juliemanager.data.FileItem;
-import com.example.juliemanager.function.file.FileListFunction;
-import com.example.juliemanager.listener.OnCheckedChangedListener;
-import com.example.juliemanager.listener.OnItemClickListener;
+import com.example.juliemanager.function.FileListFunction;
+import com.example.juliemanager.listener.OnFileItemStateChangeListener;
 
 import java.util.ArrayList;
 
 /**
  * Created by julie on 2019-10-08
- * 파일 리스트를 화면에 보여주는 어댑터
+ * 파일들(데이터)를 화면에 보여주는 어댑터
  */
 public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
     private ArrayList<FileItem> fileItems;
@@ -41,10 +40,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
         View view = inflater.inflate(R.layout.fileitem, parent, false);
 
         FileListHolder viewHolder = new FileListHolder(view);
-        viewHolder.setItemClickListener(new OnItemClickListener() {
+        viewHolder.setOnFileItemStateChangeListener(new OnFileItemStateChangeListener() {
             @Override
-            public void onItemClick(View v, int position) {
-                FileItem selectItem = fileItems.get(position);
+            public void onItemClick(int pos) {
+                FileItem selectItem = fileItems.get(pos);
                 if (selectItem.isFile()) { //파일일 경우 뷰어 열기
                     FileListFunction.showFileViewer(context, selectItem);
                 } else {
@@ -52,9 +51,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
                     FileListFunction.refreshFileList(selectItem.getFilePath(), fileItems, notifyFileAdapterCallback);
                 }
             }
-        });
 
-        viewHolder.setCheckedChangedListener(new OnCheckedChangedListener() {
             @Override
             public void onCheckedChanged(int pos, boolean isCheck) {
                 //파일의 즐겨찾기를 체크 유무를 데이터에 저장
@@ -74,6 +71,26 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
 
         // 항목 출력 활성화
         setActivation(fileItem, holder);
+    }
+
+    /**
+     * 파일 리스트 데이터 변경 후 화면 갱신 처리를 하는 함수
+     */
+    public void setNotifyFileAdapterCallback() {
+        this.notifyFileAdapterCallback = new NotifyFileAdapterCallback() {
+            @Override
+            public void notifyAdapter() {
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public NotifyFileAdapterCallback getNotifyFileAdapterCallback() {
+        return notifyFileAdapterCallback;
+    }
+
+    public ArrayList<FileItem> getFileItems() {
+        return fileItems;
     }
 
     /**
@@ -110,25 +127,4 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
             viewHolder.fileFavorite.setVisibility(View.VISIBLE);
         }
     }
-
-    /**
-     * 파일 리스트 데이터 변경 후 화면 갱신 처리를 하는 함수
-     */
-    public void setNotifyFileAdapterCallback() {
-        this.notifyFileAdapterCallback = new NotifyFileAdapterCallback() {
-            @Override
-            public void notifyAdapter() {
-                notifyDataSetChanged();
-            }
-        };
-    }
-
-    public NotifyFileAdapterCallback getNotifyFileAdapterCallback() {
-        return notifyFileAdapterCallback;
-    }
-
-    public ArrayList<FileItem> getFileItems() {
-        return fileItems;
-    }
-
 }

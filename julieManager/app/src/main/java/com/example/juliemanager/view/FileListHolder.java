@@ -9,18 +9,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.listener.OnCheckedChangedListener;
-import com.example.juliemanager.listener.OnItemClickListener;
+import com.example.juliemanager.listener.OnFileItemStateChangeListener;
 
 /**
  * Created by julie on 2019-11-11
  * 파일 리스트 뷰 홀더
  */
-public class
-
-FileListHolder extends RecyclerView.ViewHolder {
-    private OnItemClickListener itemClickListener;
-    private OnCheckedChangedListener checkedChangedListener;
+public class FileListHolder extends RecyclerView.ViewHolder {
+    private OnFileItemStateChangeListener onFileItemStateChangeListener;
 
     LinearLayout li_fileDateAndSize;
     ImageView fileImage;
@@ -36,12 +32,16 @@ FileListHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 int pos = getAdapterPosition();
                 if (pos != RecyclerView.NO_POSITION) {
-                    itemClickListener.onItemClick(v, pos);
+                    onFileItemStateChangeListener.onItemClick(pos);
                 }
             }
         });
 
         initView();
+    }
+
+    public void setOnFileItemStateChangeListener(OnFileItemStateChangeListener onFileItemStateChangeListener) {
+        this.onFileItemStateChangeListener = onFileItemStateChangeListener;
     }
 
     private void initView() {
@@ -54,16 +54,8 @@ FileListHolder extends RecyclerView.ViewHolder {
         fileFavorite.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                checkedChangedListener.onCheckedChanged(getAdapterPosition(), isChecked);
+                onFileItemStateChangeListener.onCheckedChanged(getAdapterPosition(), isChecked);
             }
         });
-    }
-
-    public void setItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    public void setCheckedChangedListener(OnCheckedChangedListener checkedChangedListener) {
-        this.checkedChangedListener = checkedChangedListener;
     }
 }

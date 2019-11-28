@@ -1,5 +1,10 @@
 package com.example.juliemanager;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.juliemanager.view.FileListFragment;
+
+import java.util.ArrayList;
 
 /**
  * Created by julie on 2019-10-08
@@ -20,8 +27,48 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initFragList();
-        initDelete();
+
+        if (hasPermission()) {
+            initFragList();
+            initDelete();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initFragList();
+                initDelete();
+            }
+        }
+    }
+
+    /**
+     * 권한이 없다면 권한 요청하는 함수
+     *
+     * @return 권한 있음
+     */
+    private boolean hasPermission() {
+        ArrayList<String> permissionList = new ArrayList<>();
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        int permissionResult;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            for (String permission : permissions) {
+                permissionResult = checkSelfPermission(permission);
+                if (permissionResult == PackageManager.PERMISSION_DENIED) {
+                    permissionList.add(permission);
+                }
+            }
+
+            if (!permissionList.isEmpty()) {
+                ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), 1);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

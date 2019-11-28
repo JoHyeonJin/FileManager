@@ -1,4 +1,4 @@
-package com.example.juliemanager.function.file;
+package com.example.juliemanager.function;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -49,7 +49,18 @@ public class FileListFunction {
      * @param notifyFileAdapterCallback 파일 리스트 데이터 변경 후 데이터 변경 알림을 위한 콜백
      */
     public static void refreshFileList(String path, ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyFileAdapterCallback) {
-        FileRefreshAsync listAsyncTask = new FileRefreshAsync(fileItems, notifyFileAdapterCallback);
+        FileRefreshAsyncTask listAsyncTask = new FileRefreshAsyncTask(fileItems, notifyFileAdapterCallback);
         listAsyncTask.execute(path);
+    }
+
+    /**
+     * 선택한 파일을 삭제해 리스트를 갱신하는 함수
+     *
+     * @param fileItems                 현재 파일 리스트
+     * @param notifyFileAdapterCallback 파일 리스트 데이터 삭제 후 데이터 변경 알림을 위한 콜백
+     */
+    public static void deleteFile(ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyFileAdapterCallback) {
+        FileDeleteAsyncTask deleteAsync = new FileDeleteAsyncTask(fileItems, notifyFileAdapterCallback);
+        deleteAsync.execute();
     }
 }

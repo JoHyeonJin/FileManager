@@ -1,4 +1,4 @@
-package com.example.juliemanager.function.file;
+package com.example.juliemanager.function;
 
 import android.os.AsyncTask;
 
@@ -17,11 +17,11 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  * Created by julie on 2019-11-11
  * 현재 경로에 대해 파일 리스트 가져오는 클래스
  */
-public class FileRefreshAsync extends AsyncTask<String, Void, ArrayList<FileItem>> {
+public class FileRefreshAsyncTask extends AsyncTask<String, Void, ArrayList<FileItem>> {
     private ArrayList<FileItem> fileItems;
     private NotifyFileAdapterCallback notifyAdapterCallback;
 
-    public FileRefreshAsync(ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyAdapterCallback) {
+    public FileRefreshAsyncTask(ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyAdapterCallback) {
         this.fileItems = fileItems;
         this.notifyAdapterCallback = notifyAdapterCallback;
     }
@@ -44,6 +44,19 @@ public class FileRefreshAsync extends AsyncTask<String, Void, ArrayList<FileItem
 
         return addFileList(currentDir, files);
     }
+
+    @Override
+    protected void onPostExecute(ArrayList<FileItem> fileItemArrayList) {
+        super.onPostExecute(fileItemArrayList);
+        fileItems.clear();
+        fileItems.addAll(fileItemArrayList);
+
+        // TODO: julie 2019-10-25 현재 경로가 존재하지 않거나, 파일 리스트가 존재하지 않을 때 예외 처리 필요.
+        if (fileItems.isEmpty()) return;
+
+        notifyAdapterCallback.notifyAdapter();
+    }
+
 
     /**
      * 파일 항목들에 대해 파일 정보를 저장하기 위한 함수
@@ -79,17 +92,5 @@ public class FileRefreshAsync extends AsyncTask<String, Void, ArrayList<FileItem
         }
 
         return items;
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<FileItem> fileItemArrayList) {
-        super.onPostExecute(fileItemArrayList);
-        fileItems.clear();
-        fileItems.addAll(fileItemArrayList);
-
-        // TODO: julie 2019-10-25 현재 경로가 존재하지 않거나, 파일 리스트가 존재하지 않을 때 예외 처리 필요.
-        if (fileItems.isEmpty()) return;
-
-        notifyAdapterCallback.notifyAdapter();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.juliemanager.function.edit;
+package com.example.juliemanager.function;
 
 import android.os.AsyncTask;
 
@@ -12,11 +12,11 @@ import java.util.ArrayList;
  * Created by julie on 2019-11-22
  * 즐겨찾기 ON인 경우 파일 리스트에서 삭제하는 클래스
  */
-public class FileDeleteAsync extends AsyncTask {
+public class FileDeleteAsyncTask extends AsyncTask {
     private ArrayList<FileItem> fileItems;
     private NotifyFileAdapterCallback notifyFileAdapterCallback;
 
-    public FileDeleteAsync(ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyFileAdapterCallback) {
+    public FileDeleteAsyncTask(ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyFileAdapterCallback) {
         this.fileItems = fileItems;
         this.notifyFileAdapterCallback = notifyFileAdapterCallback;
     }
