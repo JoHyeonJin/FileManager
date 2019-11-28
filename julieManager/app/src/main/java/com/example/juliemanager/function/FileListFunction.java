@@ -20,6 +20,20 @@ import java.util.ArrayList;
  * 파일 리스트 처리를 위한 함수 모음 클래스
  */
 public class FileListFunction {
+    public static FileListFunction instance = new FileListFunction();
+    private ArrayList<FileItem> fileItems;
+
+    public FileListFunction() {
+        this.fileItems = new ArrayList<>();
+    }
+
+    public static FileListFunction getInstance(){
+        return instance;
+    }
+
+    public ArrayList<FileItem> getFileItems() {
+        return fileItems;
+    }
 
     /**
      * 파일 선택 시 뷰어 열기
@@ -27,7 +41,7 @@ public class FileListFunction {
      * @param context    컨텍스트
      * @param selectItem 선택한 파일
      */
-    public static void showFileViewer(Context context, FileItem selectItem) {
+    public void showFileViewer(Context context, FileItem selectItem) {
         //버전 7.0 부터 앱 사이 공유 엄격화로 인해 외장 경로에 임시 액세스 권한 부여
         Uri data = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(selectItem.getFilePath()));
         String type = FileUtils.getMimeType(selectItem.getFileExt());
@@ -45,10 +59,9 @@ public class FileListFunction {
      * 경로의 파일 리스트를 가져와 갱신하는 함수
      *
      * @param path                      경로
-     * @param fileItems                 파일 리스트
      * @param notifyFileAdapterCallback 파일 리스트 데이터 변경 후 데이터 변경 알림을 위한 콜백
      */
-    public static void refreshFileList(String path, ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyFileAdapterCallback) {
+    public void refreshFileList(String path, NotifyFileAdapterCallback notifyFileAdapterCallback) {
         FileRefreshAsyncTask listAsyncTask = new FileRefreshAsyncTask(fileItems, notifyFileAdapterCallback);
         listAsyncTask.execute(path);
     }
@@ -56,10 +69,9 @@ public class FileListFunction {
     /**
      * 선택한 파일을 삭제해 리스트를 갱신하는 함수
      *
-     * @param fileItems                 현재 파일 리스트
      * @param notifyFileAdapterCallback 파일 리스트 데이터 삭제 후 데이터 변경 알림을 위한 콜백
      */
-    public static void deleteFile(ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyFileAdapterCallback) {
+    public void deleteFile(NotifyFileAdapterCallback notifyFileAdapterCallback) {
         FileDeleteAsyncTask deleteAsync = new FileDeleteAsyncTask(fileItems, notifyFileAdapterCallback);
         deleteAsync.execute();
     }

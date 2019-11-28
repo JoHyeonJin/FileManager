@@ -23,8 +23,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
     private ArrayList<FileItem> fileItems;
     private NotifyFileAdapterCallback notifyFileAdapterCallback;
 
-    public FileAdapter() {
-        this.fileItems = new ArrayList<>();
+    public FileAdapter(ArrayList<FileItem> fileItems) {
+        this.fileItems = fileItems;
         setNotifyFileAdapterCallback();
     }
 
@@ -44,11 +44,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
             @Override
             public void onItemClick(int pos) {
                 FileItem selectItem = fileItems.get(pos);
-                if (selectItem.isFile()) { //파일일 경우 뷰어 열기
-                    FileListFunction.showFileViewer(context, selectItem);
+                if (selectItem.isFile()) {
+                    //파일일 경우 뷰어 열기
+                    FileListFunction.getInstance().showFileViewer(context, selectItem);
                 } else {
                     //폴더일 경우 상위,하위로 이동
-                    FileListFunction.refreshFileList(selectItem.getFilePath(), fileItems, notifyFileAdapterCallback);
+                    FileListFunction.getInstance().refreshFileList(selectItem.getFilePath(), notifyFileAdapterCallback);
                 }
             }
 
@@ -87,10 +88,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
 
     public NotifyFileAdapterCallback getNotifyFileAdapterCallback() {
         return notifyFileAdapterCallback;
-    }
-
-    public ArrayList<FileItem> getFileItems() {
-        return fileItems;
     }
 
     /**

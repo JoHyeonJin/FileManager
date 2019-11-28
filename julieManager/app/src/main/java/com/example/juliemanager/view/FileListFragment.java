@@ -20,6 +20,7 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  * 파일 리스트를 보여주는 프래그먼트
  */
 public class FileListFragment extends Fragment {
+    private FileListFunction fileListFunction;
     private FileAdapter fileAdapter;
 
     @Override
@@ -38,7 +39,10 @@ public class FileListFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.view_fileList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        fileAdapter = new FileAdapter();
+
+        fileListFunction = FileListFunction.getInstance();
+        fileAdapter = new FileAdapter(fileListFunction.getFileItems());
+
         recyclerView.setAdapter(fileAdapter);
     }
 
@@ -47,13 +51,13 @@ public class FileListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         //ROOT 경로의 파일 리스트 갱신
-        FileListFunction.refreshFileList(ROOT, fileAdapter.getFileItems(), fileAdapter.getNotifyFileAdapterCallback());
+        fileListFunction.refreshFileList(ROOT, fileAdapter.getNotifyFileAdapterCallback());
     }
 
     /**
      * 파일 삭제
      */
     public void delete() {
-        FileListFunction.deleteFile(fileAdapter.getFileItems(), fileAdapter.getNotifyFileAdapterCallback());
+        fileListFunction.deleteFile(fileAdapter.getNotifyFileAdapterCallback());
     }
 }
