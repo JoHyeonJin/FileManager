@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.callback.NotifyFileAdapterCallback;
 import com.example.juliemanager.data.FileItem;
 import com.example.juliemanager.function.FileListFunction;
 import com.example.juliemanager.listener.OnFileItemStateChangeListener;
@@ -21,11 +20,9 @@ import java.util.ArrayList;
  */
 public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
     private ArrayList<FileItem> fileItems;
-    private NotifyFileAdapterCallback notifyFileAdapterCallback;
 
     public FileAdapter(ArrayList<FileItem> fileItems) {
         this.fileItems = fileItems;
-        setNotifyFileAdapterCallback();
     }
 
     @Override
@@ -49,7 +46,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
                     FileListFunction.getInstance().showFileViewer(context, selectItem);
                 } else {
                     //폴더일 경우 상위,하위로 이동
-                    FileListFunction.getInstance().refreshFileList(selectItem.getFilePath(), notifyFileAdapterCallback);
+                    FileListFunction.getInstance().refreshFileList(selectItem.getFilePath());
                 }
             }
 
@@ -72,22 +69,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
 
         // 항목 출력 활성화
         setActivation(fileItem, holder);
-    }
-
-    /**
-     * 파일 리스트 데이터 변경 후 화면 갱신 처리를 하는 함수
-     */
-    public void setNotifyFileAdapterCallback() {
-        this.notifyFileAdapterCallback = new NotifyFileAdapterCallback() {
-            @Override
-            public void notifyAdapter() {
-                notifyDataSetChanged();
-            }
-        };
-    }
-
-    public NotifyFileAdapterCallback getNotifyFileAdapterCallback() {
-        return notifyFileAdapterCallback;
     }
 
     /**

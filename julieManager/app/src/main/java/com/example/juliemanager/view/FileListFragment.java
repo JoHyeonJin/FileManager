@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.juliemanager.R;
+import com.example.juliemanager.callback.FileListChangedCallback;
 import com.example.juliemanager.function.FileListFunction;
 
 import static com.example.juliemanager.utils.FileConstant.ROOT;
@@ -20,7 +21,6 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  * 파일 리스트를 보여주는 프래그먼트
  */
 public class FileListFragment extends Fragment {
-    private FileListFunction fileListFunction;
     private FileAdapter fileAdapter;
 
     @Override
@@ -40,9 +40,7 @@ public class FileListFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.view_fileList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        fileListFunction = FileListFunction.getInstance();
-        fileAdapter = new FileAdapter(fileListFunction.getFileItems());
-
+        fileAdapter = new FileAdapter(FileListFunction.getInstance().getFileItems());
         recyclerView.setAdapter(fileAdapter);
     }
 
@@ -50,14 +48,21 @@ public class FileListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        FileListFunction.getInstance().setFileListChangedCallback(new FileListChangedCallback() {
+            @Override
+            public void onChange() {
+                fileAdapter.notifyDataSetChanged();
+            }
+        });
+
         //ROOT 경로의 파일 리스트 갱신
-        fileListFunction.refreshFileList(ROOT, fileAdapter.getNotifyFileAdapterCallback());
+        FileListFunction.getInstance().refreshFileList(ROOT);
     }
 
     /**
      * 파일 삭제
      */
     public void delete() {
-        fileListFunction.deleteFile(fileAdapter.getNotifyFileAdapterCallback());
+        FileListFunction.getInstance().deleteFile();
     }
 }

@@ -8,7 +8,7 @@ import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.callback.NotifyFileAdapterCallback;
+import com.example.juliemanager.callback.FileListChangedCallback;
 import com.example.juliemanager.data.FileItem;
 import com.example.juliemanager.utils.FileUtils;
 
@@ -22,12 +22,13 @@ import java.util.ArrayList;
 public class FileListFunction {
     public static FileListFunction instance = new FileListFunction();
     private ArrayList<FileItem> fileItems;
+    private FileListChangedCallback fileListChangedCallback;
 
     public FileListFunction() {
         this.fileItems = new ArrayList<>();
     }
 
-    public static FileListFunction getInstance(){
+    public static FileListFunction getInstance() {
         return instance;
     }
 
@@ -58,21 +59,25 @@ public class FileListFunction {
     /**
      * 경로의 파일 리스트를 가져와 갱신하는 함수
      *
-     * @param path                      경로
-     * @param notifyFileAdapterCallback 파일 리스트 데이터 변경 후 데이터 변경 알림을 위한 콜백
+     * @param path 경로
      */
-    public void refreshFileList(String path, NotifyFileAdapterCallback notifyFileAdapterCallback) {
-        FileRefreshAsyncTask listAsyncTask = new FileRefreshAsyncTask(fileItems, notifyFileAdapterCallback);
+    public void refreshFileList(String path) {
+        FileRefreshAsyncTask listAsyncTask = new FileRefreshAsyncTask(fileItems, fileListChangedCallback);
         listAsyncTask.execute(path);
     }
 
     /**
      * 선택한 파일을 삭제해 리스트를 갱신하는 함수
-     *
-     * @param notifyFileAdapterCallback 파일 리스트 데이터 삭제 후 데이터 변경 알림을 위한 콜백
      */
-    public void deleteFile(NotifyFileAdapterCallback notifyFileAdapterCallback) {
-        FileDeleteAsyncTask deleteAsync = new FileDeleteAsyncTask(fileItems, notifyFileAdapterCallback);
+    public void deleteFile() {
+        FileDeleteAsyncTask deleteAsync = new FileDeleteAsyncTask(fileItems, fileListChangedCallback);
         deleteAsync.execute();
+    }
+
+    /**
+     * 파일 리스트 데이터 변경 후 화면 갱신 처리를 하는 함수
+     */
+    public void setFileListChangedCallback(FileListChangedCallback fileListChangedCallback) {
+        this.fileListChangedCallback = fileListChangedCallback;
     }
 }

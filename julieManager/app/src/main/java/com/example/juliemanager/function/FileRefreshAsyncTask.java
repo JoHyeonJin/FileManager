@@ -3,7 +3,7 @@ package com.example.juliemanager.function;
 import android.os.AsyncTask;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.callback.NotifyFileAdapterCallback;
+import com.example.juliemanager.callback.FileListChangedCallback;
 import com.example.juliemanager.data.FileItem;
 import com.example.juliemanager.utils.FileUtils;
 
@@ -17,13 +17,13 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  * Created by julie on 2019-11-11
  * 현재 경로에 대해 파일 리스트 가져오는 클래스
  */
-public class FileRefreshAsyncTask extends AsyncTask<String, Void, ArrayList<FileItem>> {
+public class FileRefreshAsyncTask extends AsyncTask<String, Void, ArrayList<FileItem>>  {
     private ArrayList<FileItem> fileItems;
-    private NotifyFileAdapterCallback notifyAdapterCallback;
+    private FileListChangedCallback fileListChangedCallback;
 
-    public FileRefreshAsyncTask(ArrayList<FileItem> fileItems, NotifyFileAdapterCallback notifyAdapterCallback) {
+    public FileRefreshAsyncTask(ArrayList<FileItem> fileItems, FileListChangedCallback fileListChangedCallback) {
         this.fileItems = fileItems;
-        this.notifyAdapterCallback = notifyAdapterCallback;
+        this.fileListChangedCallback = fileListChangedCallback;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class FileRefreshAsyncTask extends AsyncTask<String, Void, ArrayList<File
         // TODO: julie 2019-10-25 현재 경로가 존재하지 않거나, 파일 리스트가 존재하지 않을 때 예외 처리 필요.
         if (fileItems.isEmpty()) return;
 
-        notifyAdapterCallback.notifyAdapter();
+        fileListChangedCallback.onChange();
     }
 
 
@@ -93,4 +93,6 @@ public class FileRefreshAsyncTask extends AsyncTask<String, Void, ArrayList<File
 
         return items;
     }
+
+
 }
