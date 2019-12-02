@@ -2,7 +2,7 @@ package com.example.juliemanager.function;
 
 import android.os.AsyncTask;
 
-import com.example.juliemanager.callback.FileListChangedCallback;
+import com.example.juliemanager.callback.AsyncTaskExecuteCallback;
 import com.example.juliemanager.data.FileItem;
 
 import java.io.File;
@@ -14,11 +14,11 @@ import java.util.ArrayList;
  */
 public class FileDeleteAsyncTask extends AsyncTask {
     private ArrayList<FileItem> fileItems;
-    private FileListChangedCallback fileListChangedCallback;
+    private AsyncTaskExecuteCallback asyncTaskExecuteCallback;
 
-    public FileDeleteAsyncTask(ArrayList<FileItem> fileItems, FileListChangedCallback fileListChangedCallback) {
+    public FileDeleteAsyncTask(ArrayList<FileItem> fileItems, AsyncTaskExecuteCallback asyncTaskExecuteCallback) {
         this.fileItems = fileItems;
-        this.fileListChangedCallback = fileListChangedCallback;
+        this.asyncTaskExecuteCallback = asyncTaskExecuteCallback;
     }
 
     @Override
@@ -44,6 +44,6 @@ public class FileDeleteAsyncTask extends AsyncTask {
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
 
-        fileListChangedCallback.onChange();
+        asyncTaskExecuteCallback.onDone();
     }
 }

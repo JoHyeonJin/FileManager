@@ -8,7 +8,7 @@ import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.callback.FileListChangedCallback;
+import com.example.juliemanager.callback.AsyncTaskExecuteCallback;
 import com.example.juliemanager.data.FileItem;
 import com.example.juliemanager.utils.FileUtils;
 
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class FileListFunction {
     public static FileListFunction instance = new FileListFunction();
     private ArrayList<FileItem> fileItems;
-    private FileListChangedCallback fileListChangedCallback;
+    private AsyncTaskExecuteCallback asyncTaskExecuteCallback;
 
     public FileListFunction() {
         this.fileItems = new ArrayList<>();
@@ -62,7 +62,7 @@ public class FileListFunction {
      * @param path 경로
      */
     public void refreshFileList(String path) {
-        FileRefreshAsyncTask listAsyncTask = new FileRefreshAsyncTask(fileItems, fileListChangedCallback);
+        FileRefreshAsyncTask listAsyncTask = new FileRefreshAsyncTask(fileItems, asyncTaskExecuteCallback);
         listAsyncTask.execute(path);
     }
 
@@ -70,14 +70,14 @@ public class FileListFunction {
      * 선택한 파일을 삭제해 리스트를 갱신하는 함수
      */
     public void deleteFile() {
-        FileDeleteAsyncTask deleteAsync = new FileDeleteAsyncTask(fileItems, fileListChangedCallback);
+        FileDeleteAsyncTask deleteAsync = new FileDeleteAsyncTask(fileItems, asyncTaskExecuteCallback);
         deleteAsync.execute();
     }
 
     /**
      * 파일 리스트 데이터 변경 후 화면 갱신 처리를 하는 함수
      */
-    public void setFileListChangedCallback(FileListChangedCallback fileListChangedCallback) {
-        this.fileListChangedCallback = fileListChangedCallback;
+    public void setAsyncTaskExecuteCallback(AsyncTaskExecuteCallback asyncTaskExecuteCallback) {
+        this.asyncTaskExecuteCallback = asyncTaskExecuteCallback;
     }
 }

@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.callback.FileListChangedCallback;
+import com.example.juliemanager.callback.AsyncTaskExecuteCallback;
 import com.example.juliemanager.function.FileListFunction;
 
 import static com.example.juliemanager.utils.FileConstant.ROOT;
@@ -48,9 +48,9 @@ public class FileListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        FileListFunction.getInstance().setFileListChangedCallback(new FileListChangedCallback() {
+        FileListFunction.getInstance().setAsyncTaskExecuteCallback(new AsyncTaskExecuteCallback() {
             @Override
-            public void onChange() {
+            public void onDone() {
                 fileAdapter.notifyDataSetChanged();
             }
         });
