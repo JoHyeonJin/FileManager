@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import com.example.juliemanager.R;
 import com.example.juliemanager.data.FileItem;
-import com.example.juliemanager.function.FileListFunction;
-import com.example.juliemanager.listener.OnFileItemStateChangeListener;
+import com.example.juliemanager.function.FileFunction;
+import com.example.juliemanager.listener.FileListener;
 
 import java.util.ArrayList;
 
@@ -37,19 +37,27 @@ public class FileAdapter extends RecyclerView.Adapter<FileListHolder> {
         View view = inflater.inflate(R.layout.fileitem, parent, false);
 
         FileListHolder viewHolder = new FileListHolder(view);
-        viewHolder.setOnFileItemStateChangeListener(new OnFileItemStateChangeListener() {
+        viewHolder.setOnItemClickListener(new FileListener.OnItemClickListener() {
             @Override
             public void onItemClick(int pos) {
                 FileItem selectItem = fileItems.get(pos);
                 if (selectItem.isFile()) {
                     //파일일 경우 뷰어 열기
-                    FileListFunction.getInstance().showFileViewer(context, selectItem);
+                    FileFunction.getInstance().showFileViewer(context, selectItem);
                 } else {
                     //폴더일 경우 상위,하위로 이동
-                    FileListFunction.getInstance().refreshFileList(selectItem.getFilePath());
+                    FileFunction.getInstance().refreshFileList(selectItem.getFilePath(), new FileListener.TaskListener() {
+                        @Override
+                        public void onCompleted() {
+                            // TODO: 2019-12-04 FileListFragment의 refresh와 중복. 추후 방법 생각해야됨  
+                            notifyDataSetChanged();
+                        }
+                    });
                 }
             }
+        });
 
+        viewHolder.setOnCheckedChangedListener(new FileListener.OnCheckedChangedListener() {
             @Override
             public void onCheckedChanged(int pos, boolean isCheck) {
                 //파일의 즐겨찾기를 체크 유무를 데이터에 저장

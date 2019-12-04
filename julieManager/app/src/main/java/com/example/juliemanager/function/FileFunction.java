@@ -8,8 +8,8 @@ import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.callback.AsyncTaskExecuteCallback;
 import com.example.juliemanager.data.FileItem;
+import com.example.juliemanager.listener.FileListener;
 import com.example.juliemanager.utils.FileUtils;
 
 import java.io.File;
@@ -19,16 +19,15 @@ import java.util.ArrayList;
  * Created by julie on 2019-10-15
  * 파일 리스트 처리를 위한 함수 모음 클래스
  */
-public class FileListFunction {
-    public static FileListFunction instance = new FileListFunction();
+public class FileFunction {
+    public static FileFunction instance = new FileFunction();
     private ArrayList<FileItem> fileItems;
-    private AsyncTaskExecuteCallback asyncTaskExecuteCallback;
 
-    public FileListFunction() {
+    public FileFunction() {
         this.fileItems = new ArrayList<>();
     }
 
-    public static FileListFunction getInstance() {
+    public static FileFunction getInstance() {
         return instance;
     }
 
@@ -59,25 +58,21 @@ public class FileListFunction {
     /**
      * 경로의 파일 리스트를 가져와 갱신하는 함수
      *
-     * @param path 경로
+     * @param path                     경로
+     * @param taskListener 리스트 데이터 변경 완료를 알려줌
      */
-    public void refreshFileList(String path) {
-        FileRefreshAsyncTask listAsyncTask = new FileRefreshAsyncTask(fileItems, asyncTaskExecuteCallback);
+    public void refreshFileList(String path, FileListener.TaskListener taskListener) {
+        FileRefreshAsyncTask listAsyncTask = new FileRefreshAsyncTask(fileItems, taskListener);
         listAsyncTask.execute(path);
     }
 
     /**
      * 선택한 파일을 삭제해 리스트를 갱신하는 함수
+     *
+     * @param taskListener 리스트 데이터 변경 완료를 알려줌
      */
-    public void deleteFile() {
-        FileDeleteAsyncTask deleteAsync = new FileDeleteAsyncTask(fileItems, asyncTaskExecuteCallback);
+    public void deleteFile(FileListener.TaskListener taskListener) {
+        FileDeleteAsyncTask deleteAsync = new FileDeleteAsyncTask(fileItems, taskListener);
         deleteAsync.execute();
-    }
-
-    /**
-     * 파일 리스트 데이터 변경 후 화면 갱신 처리를 하는 함수
-     */
-    public void setAsyncTaskExecuteCallback(AsyncTaskExecuteCallback asyncTaskExecuteCallback) {
-        this.asyncTaskExecuteCallback = asyncTaskExecuteCallback;
     }
 }

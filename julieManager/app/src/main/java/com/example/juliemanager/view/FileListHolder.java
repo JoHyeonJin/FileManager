@@ -9,14 +9,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.listener.OnFileItemStateChangeListener;
+import com.example.juliemanager.listener.FileListener;
 
 /**
  * Created by julie on 2019-11-11
  * 파일 리스트 뷰 홀더
  */
 public class FileListHolder extends RecyclerView.ViewHolder {
-    private OnFileItemStateChangeListener onFileItemStateChangeListener;
+    private FileListener.OnItemClickListener onItemClickListener;
+    private FileListener.OnCheckedChangedListener onCheckedChangedListener;
 
     LinearLayout li_fileDateAndSize;
     ImageView fileImage;
@@ -32,7 +33,7 @@ public class FileListHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 int pos = getAdapterPosition();
                 if (pos != RecyclerView.NO_POSITION) {
-                    onFileItemStateChangeListener.onItemClick(pos);
+                    onItemClickListener.onItemClick(pos);
                 }
             }
         });
@@ -40,8 +41,12 @@ public class FileListHolder extends RecyclerView.ViewHolder {
         initView();
     }
 
-    public void setOnFileItemStateChangeListener(OnFileItemStateChangeListener onFileItemStateChangeListener) {
-        this.onFileItemStateChangeListener = onFileItemStateChangeListener;
+    public void setOnItemClickListener(FileListener.OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public void setOnCheckedChangedListener(FileListener.OnCheckedChangedListener onCheckedChangedListener) {
+        this.onCheckedChangedListener = onCheckedChangedListener;
     }
 
     private void initView() {
@@ -54,7 +59,7 @@ public class FileListHolder extends RecyclerView.ViewHolder {
         fileFavorite.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                onFileItemStateChangeListener.onCheckedChanged(getAdapterPosition(), isChecked);
+                onCheckedChangedListener.onCheckedChanged(getAdapterPosition(), isChecked);
             }
         });
     }

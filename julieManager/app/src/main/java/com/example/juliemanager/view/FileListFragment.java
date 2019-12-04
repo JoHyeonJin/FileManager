@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.callback.AsyncTaskExecuteCallback;
-import com.example.juliemanager.function.FileListFunction;
+import com.example.juliemanager.function.FileFunction;
+import com.example.juliemanager.listener.FileListener;
 
 import static com.example.juliemanager.utils.FileConstant.ROOT;
 
@@ -22,11 +22,6 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  */
 public class FileListFragment extends Fragment {
     private FileAdapter fileAdapter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,7 +35,7 @@ public class FileListFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.view_fileList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        fileAdapter = new FileAdapter(FileListFunction.getInstance().getFileItems());
+        fileAdapter = new FileAdapter(FileFunction.getInstance().getFileItems());
         recyclerView.setAdapter(fileAdapter);
     }
 
@@ -48,21 +43,24 @@ public class FileListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        FileListFunction.getInstance().setAsyncTaskExecuteCallback(new AsyncTaskExecuteCallback() {
+        //ROOT 경로의 파일 리스트 갱신
+        FileFunction.getInstance().refreshFileList(ROOT, new FileListener.TaskListener() {
             @Override
-            public void onDone() {
+            public void onCompleted() {
                 fileAdapter.notifyDataSetChanged();
             }
         });
-
-        //ROOT 경로의 파일 리스트 갱신
-        FileListFunction.getInstance().refreshFileList(ROOT);
     }
 
     /**
      * 파일 삭제
      */
     public void delete() {
-        FileListFunction.getInstance().deleteFile();
+        FileFunction.getInstance().deleteFile(new FileListener.TaskListener() {
+            @Override
+            public void onCompleted() {
+                fileAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }

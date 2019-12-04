@@ -3,8 +3,8 @@ package com.example.juliemanager.function;
 import android.os.AsyncTask;
 
 import com.example.juliemanager.R;
-import com.example.juliemanager.callback.AsyncTaskExecuteCallback;
 import com.example.juliemanager.data.FileItem;
+import com.example.juliemanager.listener.FileListener;
 import com.example.juliemanager.utils.FileUtils;
 
 import java.io.File;
@@ -19,11 +19,11 @@ import static com.example.juliemanager.utils.FileConstant.ROOT;
  */
 public class FileRefreshAsyncTask extends AsyncTask<String, Void, ArrayList<FileItem>> {
     private ArrayList<FileItem> fileItems;
-    private AsyncTaskExecuteCallback asyncTaskExecuteCallback;
+    private FileListener.TaskListener taskListener;
 
-    public FileRefreshAsyncTask(ArrayList<FileItem> fileItems, AsyncTaskExecuteCallback asyncTaskExecuteCallback) {
+    public FileRefreshAsyncTask(ArrayList<FileItem> fileItems, FileListener.TaskListener taskListener) {
         this.fileItems = fileItems;
-        this.asyncTaskExecuteCallback = asyncTaskExecuteCallback;
+        this.taskListener = taskListener;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class FileRefreshAsyncTask extends AsyncTask<String, Void, ArrayList<File
         // TODO: julie 2019-10-25 현재 경로가 존재하지 않거나, 파일 리스트가 존재하지 않을 때 예외 처리 필요.
         if (fileItems.isEmpty()) return;
 
-        asyncTaskExecuteCallback.onDone();
+        taskListener.onCompleted();
     }
 
 
@@ -93,6 +93,4 @@ public class FileRefreshAsyncTask extends AsyncTask<String, Void, ArrayList<File
 
         return items;
     }
-
-
 }
