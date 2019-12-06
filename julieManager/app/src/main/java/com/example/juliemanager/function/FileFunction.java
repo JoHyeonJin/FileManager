@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 /**
  * Created by julie on 2019-10-15
- * 파일 리스트 처리를 위한 함수 모음 클래스
+ * 파일 처리를 위한 함수 모음 클래스
  */
 public class FileFunction {
     public static FileFunction instance = new FileFunction();
